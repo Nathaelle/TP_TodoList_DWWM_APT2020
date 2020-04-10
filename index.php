@@ -3,8 +3,7 @@
 // ------------------------------------------------------------------------------------
 // 1. INCLUSIONS CLASSES
 // Dans un premier temps, nous allons inclure les fichiers de nos classes ici pour pouvoir les utiliser
-
-// ........
+require_once "models/Utilisateur.php";
 
 // (nous verrons très prochainement comment automatiser le chargement des classes)
 
