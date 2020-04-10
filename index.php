@@ -14,7 +14,7 @@ require_once "models/Utilisateur.php";
 $route = isset($_POST["route"])? $_POST["route"] : "home";
 
 switch($route) {
-    case "home" : showHome();
+    case "home" : $view = showHome();
         break;
     case "insert_user" : insertUser();
         break;
@@ -27,8 +27,9 @@ switch($route) {
 // 1 choix = 1 fonction avec deux "types" de fonctions, celles qui mèneront à un affichage, et celles qui seront redirigées (vers un choix conduisant à un affichage)
 
 // Fonctionnalité(s) d'affichage :
-function showHome() {
+function showHome(): string {
 
+    return "home.html";
 }
 
 // Fonctionnalité(s) redirigées :
@@ -39,3 +40,19 @@ function insertUser() {
 // ------------------------------------------------------------------------------------
 // 4. TEMPLATE
 // Affichage du système de templates HTML
+
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma TODO-LIST</title>
+</head>
+<body>
+
+    <?php require "views/$view" ?>
+
+</body>
+</html>
