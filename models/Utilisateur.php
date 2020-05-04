@@ -11,7 +11,7 @@ class Utilisateur {
     private $pdo;
 
     function __construct() {
-        $this->pdo = new PDO();
+        $this->pdo = new PDO(DATABASE, LOGIN, PASSWD);
     }
 
     function getIdUtilisateur(): int {
