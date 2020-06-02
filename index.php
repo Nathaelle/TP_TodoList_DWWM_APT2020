@@ -1,6 +1,6 @@
 <?php
 session_start();
-var_dump($_SESSION);
+//var_dump($_SESSION);
 
 require "conf/global.php";
 
@@ -25,17 +25,25 @@ $route = isset($_REQUEST["route"])? $_REQUEST["route"] : "home";
 
 switch($route) {
 
-    case "home" : $include = showHome(); //Afficher la page d'accueil avec mon formulaire 
+    case "home" : $view = showHome(); //Afficher la page d'accueil avec mon formulaire 
     break;
-    case "membre" : $include = showMembre(); //Afficher l'espace membre pour un utilisateur connecté 
+    case "membre" : $view = showMembre(); //Afficher l'espace membre pour un utilisateur connecté 
+    break;
+    case "calendar" : $view = showCalendar(); //Afficher le calendrier
     break;
     case "insert_user" : insertUser(); // Déclencher une action-> enregistrer un nouvel utilisateur puis de rappeler ma page d'accueil
     break;
     case "connect_user" : connectUser(); // Déclencher une action-> connecter un utilisateur puis de rediriger vers l'espace membre si OK
     break;
+    case "insert_tache" : insertTache(); // Déclencher une action-> enregistrer un nouvel utilisateur puis de rappeler ma page d'accueil
+    break;
+    case "mod_task" : modTache(); // Déclencher une action-> enregistrer un nouvel utilisateur puis de rappeler ma page d'accueil
+    break;
+    case "del_task" : delTache(); // Déclencher une action-> enregistrer un nouvel utilisateur puis de rappeler ma page d'accueil
+    break;
     case "deconnect" : deconnectUser();
     break;
-    default : $include = showHome(); //Afficher la page d'accueil avec mon formulaire 
+    default : $view = showHome(); //Afficher la page d'accueil avec mon formulaire 
 
 }
 
@@ -49,11 +57,42 @@ function showHome() {
     if(isset($_SESSION["utilisateur"])) {
         header("Location:index.php?route=membre");
     }
-    return "home.html";
+
+    $datas = [];
+    return ["template" => "home.html", "datas" => $datas];
 }
 
 function showMembre() {
-    return "membre.php";
+
+    $tache = new Tache();
+    $tache->setIdUtilisateur($_SESSION["user"]['id']);
+    
+    $datas = [];
+
+    if(isset($_GET["id"])) {
+        $tache->setIdTache($_GET["id"]);
+        $task = $tache->select();
+        $datas["task"] = $task;
+        var_dump($task->getProperties());
+    }
+    
+    $datas['tasks'] = $tache->selectByUser();
+
+    return ["template" => "membre.php", "datas" => $datas];
+}
+
+function showCalendar() {
+
+    $aujd = new DateTimeImmutable("now", new DateTimeZone("europe/Paris"));
+    $annee_courante = $aujd->format("Y");
+    $mois_courant = $aujd->format("m");
+    $month = new Month($mois_courant, $annee_courante);
+
+    $datas = [
+        "mois" => $month->getMonthName(),
+        "annee" => $month->getYear()
+    ];
+    return ["template" => "calendrier.php", "datas" => $datas];
 }
 
 // Fonctionnalité(s) redirigées :
@@ -68,11 +107,11 @@ function insertUser() {
         $user->setPrenom($_POST["prenom"]);
         $user->setEmail($_POST["email"]);
 
-        $user->saveUser();
+        $user->insert();
     }
     
 
-    header("Location:index.php");
+    //header("Location:index.php");
 }
 
 function connectUser() {
@@ -81,16 +120,22 @@ function connectUser() {
         
         $user = new Utilisateur();
         $user->setPseudo($_POST["pseudo"]);
-        $new = $user->verifyUser()?? false;
+        $new = $user->selectByPseudo()?? false;
 
         if($new) {
-            if(password_verify($_POST["passwd"], $new->passwd)) {
-                $_SESSION["utilisateur"] = $new;
+            if(password_verify($_POST["passwd"], $new->getPasswd())) {
+                
+                $_SESSION["user"]["id"] = $new->getIdUtilisateur();
+                $_SESSION["user"]["pseudo"] = $new->getPseudo();
+                
+                header("Location:index.php?route=membre");
+                exit;
             }
         }
     } 
         
     header("Location:index.php");
+    exit;
 }
 
 function deconnectUser() {
@@ -98,6 +143,44 @@ function deconnectUser() {
     header("Location:index.php");
 }
 
+function insertTache() {
+
+    $tache = new Tache();
+    $tache->setIdUtilisateur($_SESSION['user']['id']);
+    $tache->setDescription($_POST["description"]);
+    $tache->setDeadline(new DateTime($_POST["deadline"], new DateTimeZone("europe/paris")));
+
+    $tache->insert();
+
+    header("Location:index.php?route=membre");
+}
+
+function modTache() {
+
+    $tache = new Tache();
+    $tache->setIdTache($_POST["id_tache"]);
+    $tache->setIdUtilisateur($_SESSION['user']['id']);
+    $tache->setDescription($_POST["description"]);
+    $tache->setDeadline(new DateTime($_POST["deadline"], new DateTimeZone("europe/paris")));
+    
+    $tache->update();
+    header("Location:index.php?route=membre");
+}
+
+function delTache() {
+    
+    if(isset($_REQUEST["id"])) {
+
+        $tache = new Tache();
+        $tache->setIdTache($_REQUEST["id"]);
+        $tache->select();
+
+        if($tache->getIdUtilisateur() == $_SESSION['user']['id']) {
+            $tache->delete();
+        }
+    }
+    header("Location:index.php?route=membre");
+}
 
 // ------------------------------------------------------------------------------------
 // 4. TEMPLATE
@@ -115,7 +198,7 @@ function deconnectUser() {
 <body>
     
     <!-- Inclusion sous-templates -->
-    <?php require "views/$include"; ?>
+    <?php require "views/{$view['template']}"; ?>
 
 </body>
 </html>
