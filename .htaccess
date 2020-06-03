@@ -1,0 +1,5 @@
+RewriteEngine On
+
+RewriteRule ^index$ index.php [L]
+RewriteRule ^(\w*)$ index.php?route=$1 [L]
+RewriteRule ^(\w*)-(\d*)$ index.php?route=$1&id=$2 [L]
