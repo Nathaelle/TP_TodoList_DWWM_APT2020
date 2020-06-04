@@ -6,10 +6,10 @@ $tasks = $view["datas"]["tasks"];
 <h1>Mon espace</h1>
 
 <p>
-    <a href="index.php?route=deconnect">Me déconnecter</a>
+    <a href="deconnect">Me déconnecter</a>
 </p>
 
-<form action="index.php?route=<?= isset($view['datas']['task'])? "mod_task" : "insert_tache"; ?>" method="post">
+<form action="<?= isset($view['datas']['task'])? "mod_task" : "insert_tache"; ?>" method="post">
     <div>
         <label for="description">Description</label>
         <input type="text" id="description" name="description" value="<?= isset($view['datas']['task'])? $view['datas']['task']->getDescription() : ""; ?>">
@@ -26,7 +26,7 @@ $tasks = $view["datas"]["tasks"];
 <ul>
     
 <?php foreach($tasks as $task): ?>
-    <li><a href="index.php?route=membre&id=<?= $task->getIdTache() ?>"><?= $task->getDescription() ?></a> avant le <?= $task->getDeadline()->format("d/m/Y") ?> <a href="index.php?route=del_task&id=<?= $task->getIdTache() ?>">Supprimer</a></li>
+    <li><a href="membre-<?= $task->getIdTache() ?>"><?= $task->getDescription() ?></a> avant le <?= $task->getDeadline()->format("d/m/Y") ?> <a href="del_task-<?= $task->getIdTache() ?>">Supprimer</a></li>
 <?php endforeach ?>
 
 </ul>

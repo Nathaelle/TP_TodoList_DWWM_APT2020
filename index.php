@@ -55,7 +55,7 @@ switch($route) {
 // Fonctionnalité(s) d'affichage :
 function showHome() {
     if(isset($_SESSION["utilisateur"])) {
-        header("Location:index.php?route=membre");
+        header("Location:membre");
     }
 
     $datas = [];
@@ -111,7 +111,7 @@ function insertUser() {
     }
     
 
-    //header("Location:index.php");
+    header("Location:index");
 }
 
 function connectUser() {
@@ -128,19 +128,19 @@ function connectUser() {
                 $_SESSION["user"]["id"] = $new->getIdUtilisateur();
                 $_SESSION["user"]["pseudo"] = $new->getPseudo();
                 
-                header("Location:index.php?route=membre");
+                header("Location:membre");
                 exit;
             }
         }
     } 
         
-    header("Location:index.php");
+    header("Location:index");
     exit;
 }
 
 function deconnectUser() {
     unset($_SESSION["utilisateur"]);
-    header("Location:index.php");
+    header("Location:index");
 }
 
 function insertTache() {
@@ -152,7 +152,7 @@ function insertTache() {
 
     $tache->insert();
 
-    header("Location:index.php?route=membre");
+    header("Location:membre");
 }
 
 function modTache() {
@@ -164,7 +164,7 @@ function modTache() {
     $tache->setDeadline(new DateTime($_POST["deadline"], new DateTimeZone("europe/paris")));
     
     $tache->update();
-    header("Location:index.php?route=membre");
+    header("Location:membre");
 }
 
 function delTache() {
@@ -179,7 +179,7 @@ function delTache() {
             $tache->delete();
         }
     }
-    header("Location:index.php?route=membre");
+    header("Location:membre");
 }
 
 // ------------------------------------------------------------------------------------
