@@ -1,13 +1,15 @@
 <?php
-namespace Controlers;
 
 class UploadImage {
     
     private $imageFile;
+    private $width;
+    private $height;
     
-    function __construct($imageFile) {
-        
+    function __construct($imageFile, $width, $height) {
         $this->imageFile = $imageFile;
+        $this->width = $width;
+        $this->height = $height;
     }
     
     function set_image() {
@@ -22,7 +24,7 @@ class UploadImage {
         /* Récupère les nouveaux noms de fichiers après traitement par la fonction upload() : */
         $filename_new = $this->upload();
         /* Redimensionne les images par la fonction img_resize() : */
-        $img_new = $this->img_resize($this->imageFile['tmp_name'], 450, 450);
+        $img_new = $this->img_resize($this->imageFile['tmp_name'], $this->width, $this->height);
 
         /* Génère l'image fullsize $fullsizeimage_new vers le fichier $filename_new en fonction de son mime : */
         switch ($this->imageFile['type']) {

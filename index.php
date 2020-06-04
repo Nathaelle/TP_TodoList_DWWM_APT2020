@@ -54,7 +54,7 @@ switch($route) {
 
 // Fonctionnalité(s) d'affichage :
 function showHome() {
-    if(isset($_SESSION["utilisateur"])) {
+    if(isset($_SESSION["user"])) {
         header("Location:membre");
     }
 
@@ -63,6 +63,10 @@ function showHome() {
 }
 
 function showMembre() {
+
+    if(!isset($_SESSION["user"])) {
+        header("Location:home");
+    }
 
     $tache = new Tache();
     $tache->setIdUtilisateur($_SESSION["user"]['id']);
@@ -145,9 +149,16 @@ function deconnectUser() {
 
 function insertTache() {
 
+    $image = "default.png";
+    if(!empty($_FILES['image']['tmp_name'])) {
+        $uploader = new UploadImage($_FILES['image'], 450, 450);
+        $image = $uploader->set_image();
+    }
+
     $tache = new Tache();
     $tache->setIdUtilisateur($_SESSION['user']['id']);
     $tache->setDescription($_POST["description"]);
+    $tache->setImage($image);
     $tache->setDeadline(new DateTime($_POST["deadline"], new DateTimeZone("europe/paris")));
 
     $tache->insert();
@@ -176,7 +187,11 @@ function delTache() {
         $tache->select();
 
         if($tache->getIdUtilisateur() == $_SESSION['user']['id']) {
+            $image = $tache->getImage();
             $tache->delete();
+            if($image != "default.png") {
+                unlink("img/".$image);
+            }
         }
     }
     header("Location:membre");
