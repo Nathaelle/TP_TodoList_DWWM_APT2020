@@ -44,18 +44,18 @@ class Tache extends DbConnect {
         $this->idUtilisateur = $id;
     }
 
-    function setImage(string $image) {
-        $this->image = $image;
+    function setImage(string $img) {
+        $this->image = $img;
     }
 
     function insert() {
 
         $ddline = $this->deadline->format("Y-m-d");
-        $query = "INSERT INTO `tasks`(`description`, `deadline`, `id_user`, `image`) VALUES (:desc,:deadline,:id, :image)";
+        $query = "INSERT INTO `tasks`(`description`, `deadline`, `id_user`, `image`) VALUES (:desc, :deadline, :id, :img)";
         $result = $this->pdo->prepare($query);
         $result->bindValue("desc", $this->description, PDO::PARAM_STR);
         $result->bindValue("deadline", $ddline, PDO::PARAM_STR);
-        $result->bindValue("image", $this->image, PDO::PARAM_STR);
+        $result->bindValue("img", $this->image, PDO::PARAM_STR);
         $result->bindValue("id", $this->idUtilisateur, PDO::PARAM_INT);
         $result->execute();
 
@@ -74,19 +74,20 @@ class Tache extends DbConnect {
         $result->bindValue("id", $this->idUtilisateur, PDO::PARAM_INT);
         $result->execute();
         $datas = $result->fetchAll();
+        return $datas;
         
-        $tasks = [];
-        foreach($datas as $elem) {
-            $task = new Tache();
-            $task->setIdTache($elem['id_task']);
-            $task->setDescription($elem['description']);
-            $task->setIdUtilisateur($elem['id_user']);
-            $task->setDeadline(new DateTime($elem['deadline'], new DateTimeZone("europe/paris")));
-            $task->setImage($elem['image']);
-            array_push($tasks, $task);
-        }
+        // $tasks = [];
+        // foreach($datas as $elem) {
+        //     $task = new Tache();
+        //     $task->setIdTache($elem['id_task']);
+        //     $task->setDescription($elem['description']);
+        //     $task->setIdUtilisateur($elem['id_user']);
+        //     $task->setImage($elem['image']);
+        //     $task->setDeadline(new DateTime($elem['deadline'], new DateTimeZone("europe/paris")));
+        //     array_push($tasks, $task);
+        // }
 
-        return $tasks;
+        // return $tasks;
 
     }
 
@@ -99,8 +100,8 @@ class Tache extends DbConnect {
         $datas = $result->fetch();
         $this->setDescription($datas['description']);
         $this->setIdUtilisateur($datas['id_user']);
-        $this->setDeadline(new DateTime($datas['deadline'], new DateTimeZone("europe/paris")));
         $this->setImage($datas['image']);
+        $this->setDeadline(new DateTime($datas['deadline'], new DateTimeZone("europe/paris")));
         return $this;
     }
 

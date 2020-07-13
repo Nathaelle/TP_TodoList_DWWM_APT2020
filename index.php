@@ -27,6 +27,8 @@ switch($route) {
 
     case "home" : $view = showHome(); //Afficher la page d'accueil avec mon formulaire 
     break;
+    case "task_lst" : taskLst();
+    break;
     case "membre" : $view = showMembre(); //Afficher l'espace membre pour un utilisateur connecté 
     break;
     case "calendar" : $view = showCalendar(); //Afficher le calendrier
@@ -80,9 +82,21 @@ function showMembre() {
         var_dump($task->getProperties());
     }
     
-    $datas['tasks'] = $tache->selectByUser();
+    //$datas['tasks'] = $tache->selectByUser();
 
     return ["template" => "membre.php", "datas" => $datas];
+}
+
+function taskLst() {
+
+
+    sleep(3);
+    $tache = new Tache();
+    $tache->setIdUtilisateur($_SESSION["user"]['id']);
+    $tasks = $tache->selectByUser();
+    
+    echo json_encode($tasks);
+    exit;
 }
 
 function showCalendar() {
@@ -149,17 +163,18 @@ function deconnectUser() {
 
 function insertTache() {
 
-    $image = "default.png";
+    $nomImage = "default.png";
+    
     if(!empty($_FILES['image']['tmp_name'])) {
         $uploader = new UploadImage($_FILES['image'], 450, 450);
-        $image = $uploader->set_image();
+        $nomImage = $uploader->set_image();
     }
 
     $tache = new Tache();
     $tache->setIdUtilisateur($_SESSION['user']['id']);
     $tache->setDescription($_POST["description"]);
-    $tache->setImage($image);
     $tache->setDeadline(new DateTime($_POST["deadline"], new DateTimeZone("europe/paris")));
+    $tache->setImage($nomImage);
 
     $tache->insert();
 
@@ -187,10 +202,9 @@ function delTache() {
         $tache->select();
 
         if($tache->getIdUtilisateur() == $_SESSION['user']['id']) {
-            $image = $tache->getImage();
             $tache->delete();
-            if($image != "default.png") {
-                unlink("img/".$image);
+            if($tache->getImage() != "default.png") {
+                unlink("img/".$tache->getImage());
             }
         }
     }
@@ -215,5 +229,6 @@ function delTache() {
     <!-- Inclusion sous-templates -->
     <?php require "views/{$view['template']}"; ?>
 
+    <script src="js/ajax.js"></script>
 </body>
 </html>

@@ -34,10 +34,10 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   `description` varchar(255) NOT NULL,
   `deadline` datetime NOT NULL,
   `id_user` int(11) NOT NULL,
-  `image` varchar(255) DEFAULT "default.png",
+  `image` varchar(50) DEFAULT "default.png",
   PRIMARY KEY (`id_task`),
   KEY `tasks_users_fk` (`id_user`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4;
 
 
 -- --------------------------------------------------------

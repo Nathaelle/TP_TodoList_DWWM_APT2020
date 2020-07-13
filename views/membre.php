@@ -1,5 +1,5 @@
 <?php
-$tasks = $view["datas"]["tasks"];
+//$tasks = $view["datas"]["tasks"];
 
 ?>
 
@@ -19,7 +19,7 @@ $tasks = $view["datas"]["tasks"];
         <input type="date" id="deadline" name="deadline" value="<?= isset($view['datas']['task'])? $view['datas']['task']->getDeadline()->format("Y-m-d") : ""; ?>">
     </div>
     <div>
-        <label for="image">Illustration </label>
+        <label for="image">Image </label>
         <input type="file" id="image" name="image" value="">
     </div>
     <?= isset($view['datas']['task'])? "<input type='hidden' name='id_tache' value='".$view['datas']['task']->getIdTache()."'>" : ""; ?>
@@ -27,10 +27,11 @@ $tasks = $view["datas"]["tasks"];
 </form>
 
 <h2>Liste des choses à faire :</h2>
-<ul>
-    
-<?php foreach($tasks as $task): ?>
-    <li><img src="img/<?= $task->getImage() ?>" alt="" style="width: 50px; height: 50px; margin: 5px; margin-bottom: -10px;"><a href="membre-<?= $task->getIdTache() ?>"><?= $task->getDescription() ?></a> avant le <?= $task->getDeadline()->format("d/m/Y") ?> <a href="del_task-<?= $task->getIdTache() ?>">Supprimer</a></li>
-<?php endforeach ?>
 
+<ul id="modContent">
+    
 </ul>
+    
+<!-- <?php foreach($tasks as $task): ?>
+    <li><img src="img/<?= $task->getImage() ?>" alt="" style="width:50px; margin: 2px 10px; margin-bottom:-10px;"><a href="membre-<?= $task->getIdTache() ?>"><?= $task->getDescription() ?></a> avant le <?= $task->getDeadline()->format("d/m/Y") ?> <a href="del_task-<?= $task->getIdTache() ?>">Supprimer</a></li>
+<?php endforeach ?> -->
