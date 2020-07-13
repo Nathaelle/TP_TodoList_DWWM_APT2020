@@ -27,8 +27,6 @@ switch($route) {
 
     case "home" : $view = showHome(); //Afficher la page d'accueil avec mon formulaire 
     break;
-    case "task_lst" : taskLst();
-    break;
     case "membre" : $view = showMembre(); //Afficher l'espace membre pour un utilisateur connecté 
     break;
     case "calendar" : $view = showCalendar(); //Afficher le calendrier
@@ -82,22 +80,11 @@ function showMembre() {
         var_dump($task->getProperties());
     }
     
-    //$datas['tasks'] = $tache->selectByUser();
+    $datas['tasks'] = $tache->selectByUser();
 
     return ["template" => "membre.php", "datas" => $datas];
 }
 
-function taskLst() {
-
-
-    sleep(3);
-    $tache = new Tache();
-    $tache->setIdUtilisateur($_SESSION["user"]['id']);
-    $tasks = $tache->selectByUser();
-    
-    echo json_encode($tasks);
-    exit;
-}
 
 function showCalendar() {
 

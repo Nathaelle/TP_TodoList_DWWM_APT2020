@@ -74,20 +74,20 @@ class Tache extends DbConnect {
         $result->bindValue("id", $this->idUtilisateur, PDO::PARAM_INT);
         $result->execute();
         $datas = $result->fetchAll();
-        return $datas;
+        //var_dump(($datas));
         
-        // $tasks = [];
-        // foreach($datas as $elem) {
-        //     $task = new Tache();
-        //     $task->setIdTache($elem['id_task']);
-        //     $task->setDescription($elem['description']);
-        //     $task->setIdUtilisateur($elem['id_user']);
-        //     $task->setImage($elem['image']);
-        //     $task->setDeadline(new DateTime($elem['deadline'], new DateTimeZone("europe/paris")));
-        //     array_push($tasks, $task);
-        // }
+        $tasks = [];
+        foreach($datas as $elem) {
+            $task = new Tache();
+            $task->setIdTache($elem['id_task']);
+            $task->setDescription($elem['description']);
+            $task->setIdUtilisateur($elem['id_user']);
+            $task->setImage($elem['image']);
+            $task->setDeadline(new DateTime($elem['deadline'], new DateTimeZone("europe/paris")));
+            array_push($tasks, $task);
+        }
 
-        // return $tasks;
+        return $tasks;
 
     }
 

@@ -1,5 +1,5 @@
 <?php
-//$tasks = $view["datas"]["tasks"];
+$tasks = $view["datas"]["tasks"];
 
 ?>
 
@@ -27,11 +27,10 @@
 </form>
 
 <h2>Liste des choses à faire :</h2>
-
-<ul id="modContent">
+<ul>
     
-</ul>
-    
-<!-- <?php foreach($tasks as $task): ?>
+<?php foreach($tasks as $task): ?>
     <li><img src="img/<?= $task->getImage() ?>" alt="" style="width:50px; margin: 2px 10px; margin-bottom:-10px;"><a href="membre-<?= $task->getIdTache() ?>"><?= $task->getDescription() ?></a> avant le <?= $task->getDeadline()->format("d/m/Y") ?> <a href="del_task-<?= $task->getIdTache() ?>">Supprimer</a></li>
-<?php endforeach ?> -->
+<?php endforeach ?>
+
+</ul>
